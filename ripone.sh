@@ -1,16 +1,31 @@
 #!/bin/sh
 
 tempdir=/tmp
-dt=101231   #start date yyMMdd
+dt=20101231   #start date yyMMdd
 st=2055     #start time hhmm
 ch=1        #channel (mr#)   1-kossuth
 ln=185      #length in minutes
-lnb=$((ln * 495000))   #length in bytes @ 64kbps (64*60/8*1024 = 491520) + egy kis ráhagyás
 
-st=2124     #start time hhmm
+if [ -n $1 ]
+then
+    dt=$1
+fi
+
+if [ -n $2 ]
+then
+    st=$2
+fi
+
+if [ -n $3 ]
+then
+    ln=$3
+fi
+
+bitrate=96
+lnb=$((ln * bitrate * 7680))   #length in bytes @ bitrate kbps (bitrate*60/8*1024)
 
 #mplayer -dumpfile 1120.mp3 -dumpaudio -endpos 200kb http://stream001.radio.hu:443/stream/20101120_130500_1.mp3
-mplayer -dumpfile ${tempdir}/${dt}.mp3 -dumpaudio http://stream001.radio.hu:443/stream/20${dt}_${st}00_${ch}.mp3 &
+mplayer -dumpfile ${tempdir}/${dt}.mp3 -dumpaudio http://stream001.radio.hu:443/stream/${dt}_${st}00_${ch}.mp3 &
 pid=${!}
 
 fs=0
