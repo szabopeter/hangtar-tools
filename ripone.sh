@@ -33,13 +33,18 @@ while [ $fs -lt $lnb ]
 do
     sleep 10
     fs=`du -b ${tempdir}/${dt}.mp3 | sed 's/\t.*//'`
+    if ps -p $pid >/dev/null
+    then 
+        echo "MPlayer process disappeared."
+        fs=$lnb
+    fi
 done
 
-kill $pid
-sleep 1
-kill $pid
-sleep 1
-kill $pid
+while ps -p $pid >dev/null
+do
+    kill $pid
+    sleep 1
+done
 
 mp3splt -o ${dt}.mp3 ${tempdir}/${dt}.mp3 00.00 ${ln}.00
 echo "tempfile: ${tempdir}/${dt}"
